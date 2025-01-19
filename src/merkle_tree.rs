@@ -1,21 +1,38 @@
 //! Merkle tree implementation.
 
+use digest::Digest;
+use sha2::Sha256;
 use std::{collections::VecDeque, hash::Hasher};
 
 /// A node in the binary tree.
 #[derive(Debug)]
-struct Node {
-    value: [u8; 32],
-    left: Subtree,
-    right: Subtree,
+struct Node<V: AsRef<[u8]>> {
+    value: V,
+    left: Option<Box<Node<V>>>,
+    right: Option<Box<Node<V>>>,
 }
-
-/// A possible empty subtree
-#[derive(Debug)]
-struct Subtree(Option<Box<Node>>);
 
 /// Merkle tree
 #[derive(Debug)]
-struct MerkleTree<H: Hasher> {
-    nodes: VecDeque<Node<H>>,
+struct MerkleTree<H: Digest, Output: AsRef<u8>> {
+    nodes: VecDeque<Node<Output>>,
+    _marker: std::marker::PhantomData<H>,
+}
+
+impl<H: Digest, Output: AsRef<u8>> MerkleTree<H, Output> {
+    fn new() -> Self {
+        Self {
+            nodes: VecDeque::new(),
+            _marker: std::marker::PhantomData,
+        }
+    }
+
+    fn insert() {}
+}
+
+#[test]
+mod tests {
+    use super::*;
+    #[test]
+    fn test_basic_setup() {}
 }
