@@ -2,6 +2,7 @@
 
 mod binary_tree;
 mod borrowing;
+mod fizzbuzz;
 mod merkle_tree;
 mod sudoku;
 mod word_chain;
