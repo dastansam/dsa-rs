@@ -16,27 +16,22 @@ struct Node {
 /// Merkle tree
 #[derive(Debug)]
 struct MerkleTree {
-    root: Node,
+    root: Option<Node>,
 }
 
 impl MerkleTree {
     fn new() -> Self {
-        Self { nodes: Vec::new() }
-    }
-
-    /// Total nodes
-    fn len(&self) -> usize {
-        self.nodes.len()
+        Self { root: None }
     }
 
     /// Very early, inefficient way of building the merkle tree
     fn build(data: &mut Vec<Vec<u8>>) -> Result<Self, ()> {
         // find the nearest power of 2
         let size = (data.len() as f64).log2() as usize;
-        let size = if (data.len() & 0) | 1 << size == data.len() {
-            (data.len() & 0) | 1 << size
+        let size = if 1 << size == data.len() {
+            1 << size
         } else {
-            (data.len() & 0) | 1 << size + 1
+            1 << (size + 1)
         };
 
         ensure_enough_items(data, size);
@@ -69,7 +64,13 @@ impl MerkleTree {
 
         // and now, start popping and
 
-        Ok(Self { nodes })
+        Ok(Self {
+            root: nodes.pop_back(),
+        })
+    }
+
+    fn verify(proof: Vec<[u8; 32]>, data: Vec<u8>) -> bool {
+        false
     }
 }
 
